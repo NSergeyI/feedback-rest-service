@@ -1,0 +1,1 @@
+web: java -jar target/rest-service-complete-1.0.jar
