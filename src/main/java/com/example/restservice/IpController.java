@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
@@ -28,14 +31,20 @@ public class IpController {
     @GetMapping("/ip")
     public Ip ip(HttpServletRequest request) {
         String ip;
-        for (String header: IP_HEADER_CANDIDATES) {
-            String ipList = request.getHeader(header);
+        Enumeration<String> headerNames  = request.getHeaderNames();
+        HashMap<String, String> headers = new HashMap<>();
+        while (headerNames.hasMoreElements()){
+            String name = headerNames.nextElement();
+            headers.put(name, request.getHeader(name));
+        }
+        for (String headerIp: IP_HEADER_CANDIDATES) {
+            String ipList = request.getHeader(headerIp);
             if (ipList != null && ipList.length() != 0 && !"unknown".equalsIgnoreCase(ipList)) {
                 ip = ipList.split(",")[0];
-                return new Ip(counter.incrementAndGet(), ip);
+                return new Ip(counter.incrementAndGet(), ip, headers);
             }
         }
         ip = request.getRemoteAddr();
-        return new Ip(counter.incrementAndGet(), ip);
+        return new Ip(counter.incrementAndGet(), ip, headers);
     }
 }
