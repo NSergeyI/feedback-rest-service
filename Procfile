@@ -1,1 +1,1 @@
-web: java -jar target/rest-service-complete-0.0.1-SNAPSHOT.jar
+web: java -jar target/feedback-rest-service-0.0.1-SNAPSHOT.jar
